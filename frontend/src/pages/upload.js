@@ -1,5 +1,7 @@
-function Upload() {
-  return <h2>Upload Resume Page</h2>;
+import UploadResume from "../components/UploadResume";
+
+function Upload({ setResumeData }) {
+  return <UploadResume setResumeData={setResumeData} />;
 }
 
 export default Upload;

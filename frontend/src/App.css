@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -5,23 +11,57 @@ body {
   color: white;
 }
 
+/* Container Styles */
 .container {
   text-align: center;
-  padding: 40px;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .title {
   font-size: 40px;
   margin-bottom: 30px;
+  color: #60a5fa;
+  font-weight: bold;
+}
+
+/* Input Box */
+.input-box {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 25px;
+  background: #1e293b;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .input-box input {
   display: block;
-  margin: 10px auto;
-  padding: 12px;
-  width: 300px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  width: 100%;
+  max-width: 100%;
   border-radius: 8px;
-  border: none;
+  border: 1px solid #334155;
+  font-size: 14px;
+  font-family: inherit;
+  background: #0f172a;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.input-box input::placeholder {
+  color: #94a3b8;
+}
+
+.input-box input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .input-box button {
@@ -32,32 +72,92 @@ body {
   border-radius: 8px;
   color: white;
   cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: all 0.3s ease;
 }
 
 .input-box button:hover {
   background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
+.input-box button:active {
+  transform: translateY(0);
+}
+
+/* Results */
 .results {
   margin-top: 30px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 20px;
 }
 
 .card {
   background: #1e293b;
   padding: 20px;
-  margin: 15px;
-  width: 250px;
   border-radius: 12px;
-  transition: 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  text-align: left;
+  width: 280px;
+  min-height: 250px;
 }
 
 .card:hover {
-  transform: scale(1.05);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  border: 1px solid #3b82f6;
+}
+
+.card h2,
+.card h3 {
+  color: #60a5fa;
+  margin-bottom: 10px;
+}
+
+.card p {
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.card strong {
+  color: #f1f5f9;
 }
 
 .score {
-  color: #38bdf8;
+  color: #4ade80;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .input-box {
+    margin: 20px 10px;
+  }
+
+  .results {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 400px;
+  }
 }
