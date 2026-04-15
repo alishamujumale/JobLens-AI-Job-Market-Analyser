@@ -1,10 +1,46 @@
 # backend/data.py
 
 jobs = [
-    {"title": "Data Scientist", "skills": ["python", "machine learning", "pandas"], "company": "ABC Tech"},
-    {"title": "Backend Developer", "skills": ["python", "django", "sql"], "company": "XYZ Ltd"},
-    {"title": "Frontend Developer", "skills": ["html", "css", "javascript", "react"], "company": "WebWorks"},
-    {"title": "AI Engineer", "skills": ["python", "deep learning", "tensorflow"], "company": "AI Labs"}
+    {
+        "title": "Frontend Developer",
+        "skills": ["html", "css", "javascript", "react"]
+    },
+    {
+        "title": "Backend Developer",
+        "skills": ["python", "flask", "sql", "api"]
+    },
+    {
+        "title": "Data Analyst",
+        "skills": ["python", "sql", "excel", "power bi"]
+    },
+    {
+        "title": "AI Engineer",
+        "skills": ["python", "machine learning", "tensorflow"]
+    },
+    {
+        "title": "DevOps Engineer",
+        "skills": ["docker", "kubernetes", "aws", "ci/cd"]
+    },
+    {
+        "title": "Mobile Developer",
+        "skills": ["java", "kotlin", "swift", "react native"]
+    },
+    {
+        "title": "Cloud Architect",
+        "skills": ["aws", "azure", "gcp", "cloud security"]
+    },
+    {
+        "title": "Cybersecurity Analyst",
+        "skills": ["network security", "penetration testing", "incident response"]
+    },
+    {
+        "title": "Product Manager",
+        "skills": ["agile", "scrum", "roadmap planning", "stakeholder management"]
+    },
+    {
+        "title": "UX Designer",
+        "skills": ["wireframing", "prototyping", "user research", "adobe xd"]
+    }
 ]
 
 def match_score(job, user_skills, preferred_role):

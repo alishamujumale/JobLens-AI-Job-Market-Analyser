@@ -1,22 +1,36 @@
-# backend/app.py
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from data import get_job_matches
+import os
+
+from resume_parser import extract_text, extract_skills
+from matcher import match_jobs
+from data import jobs
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/match", methods=["POST"])
-def match_jobs():
-    data = request.json
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-    user_skills = data.get("skills", [])
-    preferred_role = data.get("role", "").lower()
+@app.route("/upload", methods=["POST"])
+def upload_resume():
+    file = request.files["file"]
+    path = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(path)
 
-    results = get_job_matches(user_skills, preferred_role)
+    # Step 1: extract text
+    text = extract_text(path)
 
-    return jsonify(results)
+    # Step 2: extract skills
+    skills = extract_skills(text)
+
+    # Step 3: match jobs
+    results = match_jobs(skills, jobs)
+
+    return jsonify({
+        "skills_found": skills,
+        "recommendations": results
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)
