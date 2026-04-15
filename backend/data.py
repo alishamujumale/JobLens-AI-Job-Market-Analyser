@@ -10,22 +10,20 @@ jobs = [
 def match_score(job, user_skills, preferred_role):
     score = 0
     
+    matched_skills = 0
+    
     for skill in job["skills"]:
         if skill in user_skills:
             score += 2
+            matched_skills += 1
     
+    # Skill percentage bonus
+    if len(job["skills"]) > 0:
+        match_percent = (matched_skills / len(job["skills"])) * 10
+        score += match_percent
+    
+    # Role bonus
     if preferred_role in job["title"].lower():
-        score += 3
+        score += 5
     
-    return score
-
-def get_job_matches(user_skills, preferred_role):
-    results = []
-    
-    for job in jobs:
-        score = match_score(job, user_skills, preferred_role)
-        if score > 0:
-            results.append({"job": job, "score": score})
-    
-    results.sort(key=lambda x: x["score"], reverse=True)
-    return results
+    return round(score, 2)
