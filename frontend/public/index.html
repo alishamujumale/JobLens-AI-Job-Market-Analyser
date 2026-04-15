@@ -1,43 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
+    <!-- Meta Tags -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="JobLens - AI Resume Analyzer & Job Matching Tool" />
+
+    <title>JobLens 🔍 | AI Resume Analyzer</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
+    <!-- Basic Styling -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: white;
+        min-height: 100vh;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 60px;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .logo {
+        font-size: 22px;
+        font-weight: 700;
+        color: #38bdf8;
+      }
+
+      .nav-links a {
+        color: white;
+        margin-left: 20px;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 100px 20px;
+      }
+
+      .hero h1 {
+        font-size: 48px;
+        margin-bottom: 15px;
+      }
+
+      .hero h1 span {
+        color: #38bdf8;
+      }
+
+      .hero p {
+        font-size: 18px;
+        max-width: 600px;
+        opacity: 0.8;
+      }
+
+      .btn {
+        margin-top: 25px;
+        padding: 12px 25px;
+        background: #38bdf8;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        color: black;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+
+      .btn:hover {
+        background: #0ea5e9;
+      }
+
+      .card-section {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-top: 60px;
+        padding: 0 20px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.08);
+        padding: 20px;
+        border-radius: 12px;
+        width: 250px;
+        text-align: center;
+        backdrop-filter: blur(8px);
+      }
+
+      .card h3 {
+        margin-bottom: 10px;
+        color: #38bdf8;
+      }
+
+      footer {
+        text-align: center;
+        padding: 30px;
+        margin-top: 50px;
+        opacity: 0.7;
+      }
+    </style>
   </head>
+
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="logo">🔍 JobLens</div>
+      <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Upload Resume</a>
+        <a href="#">AI Analysis</a>
+        <a href="#">About</a>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Welcome to <span>JobLens</span></h1>
+      <p>
+        AI-powered resume analyzer that reviews your resume, gives feedback,
+        and matches you with the best job opportunities.
+      </p>
+
+      <button class="btn">Upload Resume</button>
+
+      <!-- Feature Cards -->
+      <div class="card-section">
+        <div class="card">
+          <h3>📄 Resume Scan</h3>
+          <p>AI reads your resume and extracts key skills.</p>
+        </div>
+
+        <div class="card">
+          <h3>🤖 AI Feedback</h3>
+          <p>Get instant suggestions to improve your resume.</p>
+        </div>
+
+        <div class="card">
+          <h3>💼 Job Match</h3>
+          <p>Find jobs that fit your profile perfectly.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      © 2026 JobLens | Built with ❤️ for smarter job hunting
+    </footer>
+
+    <!-- React Root (if you're using React) -->
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
