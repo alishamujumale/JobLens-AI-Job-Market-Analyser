@@ -6,7 +6,7 @@ import Upload from "./pages/upload";
 function App() {
   return (
     <Router>
-      <h1>JobLens 🚀</h1>
+      <h1>JobLens</h1>
 
       <nav>
         <Link to="/">Home</Link> |{" "}
