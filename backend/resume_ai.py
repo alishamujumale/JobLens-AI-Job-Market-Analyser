@@ -69,47 +69,111 @@ def analyze_resume(text):
     ats_score = int(skill_score + section_score + length_score + density_score)
 
     # ----------------------------
-    # PERSONALIZED SUGGESTIONS
+    # ENHANCED SUGGESTIONS FOR MISSING SKILLS
     # ----------------------------
-    suggestions = []
+    suggestions = []  # Initialize suggestions list
+
+    skill_resources = {
+        "python": {
+            "learning": "Start with freeCodeCamp Python course or Codecademy",
+            "projects": "Build a web scraper, data analyzer, or automation script",
+            "certification": "Consider Python Institute certifications"
+        },
+        "java": {
+            "learning": "Oracle Java tutorials or Udemy Java courses",
+            "projects": "Create a Spring Boot application or Android app",
+            "certification": "Oracle Java certifications"
+        },
+        "javascript": {
+            "learning": "MDN Web Docs or freeCodeCamp JavaScript curriculum",
+            "projects": "Build interactive web apps with vanilla JS or frameworks",
+            "certification": "Consider freeCodeCamp certifications"
+        },
+        "react": {
+            "learning": "Official React documentation or React for Beginners course",
+            "projects": "Create a todo app, e-commerce site, or dashboard",
+            "certification": "Meta React Developer Certificate"
+        },
+        "node.js": {
+            "learning": "Node.js official docs or Express.js tutorials",
+            "projects": "Build REST APIs, chat applications, or real-time apps",
+            "certification": "Node.js certifications from Linux Academy"
+        },
+        "sql": {
+            "learning": "SQLZoo or Khan Academy SQL courses",
+            "projects": "Design database schemas, write complex queries",
+            "certification": "Microsoft SQL Server or Oracle SQL certifications"
+        },
+        "machine learning": {
+            "learning": "Coursera's Andrew Ng ML course or fast.ai",
+            "projects": "Build image classifiers, recommendation systems",
+            "certification": "Google ML Engineer or TensorFlow certificates"
+        },
+        "docker": {
+            "learning": "Docker official getting started guide",
+            "projects": "Containerize existing apps, create multi-container setups",
+            "certification": "Docker Certified Associate"
+        },
+        "aws": {
+            "learning": "AWS free tier and documentation",
+            "projects": "Deploy apps on EC2, use S3 for storage",
+            "certification": "AWS Certified Cloud Practitioner"
+        },
+        "git": {
+            "learning": "Git official documentation or Atlassian Git tutorials",
+            "projects": "Contribute to open source, manage project versions",
+            "certification": "Git certifications from various platforms"
+        }
+    }
 
     if missing_skills:
         top_missing = missing_skills[:5]
-        suggestions.append(f"Add these high-demand skills: {', '.join(top_missing)}")
+        suggestions.append(f" Priority Skills to Learn: {', '.join(top_missing)}")
 
-    if len(found_sections) < 6:
-        missing_sections = [s for s in sections if s not in found_sections]
-        suggestions.append(f"Include missing sections: {', '.join(missing_sections[:3])}")
+        # Add specific advice for top 3 missing skills
+        for skill in top_missing[:3]:
+            if skill in skill_resources:
+                res = skill_resources[skill]
+                suggestions.append(f" For {skill.title()}: {res['learning']}")
+                suggestions.append(f" Project Idea: {res['projects']}")
+                if res['certification'] != "N/A":
+                    suggestions.append(f" Certification: {res['certification']}")
 
-    if word_count < 300:
-        suggestions.append("Expand your resume content - aim for 400-600 words with detailed descriptions")
+    # General improvement suggestions
+    if len(found_skills) < 5:
+        suggestions.append(" Focus on core skills first: Python, JavaScript, SQL, and a framework like React")
 
-    if skill_keywords < 5:
-        suggestions.append("Incorporate more technical keywords relevant to your target roles")
+    if not any(s in found_skills for s in ["react", "angular", "vue"]):
+        suggestions.append(" Learn a frontend framework - React is most in-demand")
 
-    # Project suggestions based on missing skills
-    project_suggestions = []
-    if "react" in missing_skills:
-        project_suggestions.append("Build a personal portfolio website using React")
-    if "python" in missing_skills or "machine learning" in missing_skills:
-        project_suggestions.append("Create a data analysis project with Python and Pandas")
-    if "node.js" in missing_skills:
-        project_suggestions.append("Develop a REST API with Node.js and Express")
-    if "docker" in missing_skills:
-        project_suggestions.append("Containerize a simple application using Docker")
+    if not any(s in found_skills for s in ["node.js", "django", "flask", "spring"]):
+        suggestions.append(" Add backend development skills to your toolkit")
 
-    if project_suggestions:
-        suggestions.append(f"Recommended projects: {'; '.join(project_suggestions[:2])}")
+    if not any(s in found_skills for s in ["aws", "docker", "kubernetes"]):
+        suggestions.append(" Cloud and DevOps skills are highly valuable - start with AWS or Docker")
+
+    # Career progression tips
+    if len(found_skills) > 10:
+        suggestions.append(" Consider specializing in a niche area like AI/ML, DevOps, or Full-stack development")
+
+    if "leadership" not in found_skills and len(found_skills) > 8:
+        suggestions.append(" Add soft skills like leadership, communication, and project management")
+
+    # Actionable next steps
+    suggestions.append(" Set learning goals: Dedicate 1-2 hours daily to skill development")
+    suggestions.append(" Research job postings to understand exact requirements for your target roles")
 
     # ----------------------------
     # FEEDBACK
     # ----------------------------
-    if ats_score >= 80:
-        feedback = "Excellent resume - highly optimized for ATS"
-    elif ats_score >= 60:
-        feedback = "Good resume with room for improvement"
+    if ats_score >= 85:
+        feedback = "🎉 Excellent resume - highly optimized for ATS systems!"
+    elif ats_score >= 70:
+        feedback = "✅ Good resume with strong foundation - minor improvements needed"
+    elif ats_score >= 50:
+        feedback = "⚠️ Decent resume but needs significant enhancements"
     else:
-        feedback = "Resume needs significant enhancements"
+        feedback = "🔴 Resume requires major improvements to pass ATS filters"
 
     return {
         "ats_score": ats_score,
