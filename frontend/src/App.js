@@ -4,6 +4,9 @@ import { useState } from "react";
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
 import Upload from "./pages/upload";
+import Login from "./pages/login";
+import Register from "./pages/register";
+import History from "./pages/history";
 
 function App() {
   const [resumeData, setResumeData] = useState(null);
@@ -49,6 +52,35 @@ function App() {
                 Dashboard
               </NavLink>
 
+              <NavLink 
+              to="/login"
+              style={({ isActive }) => ({
+                ...styles.link,
+                backgroundColor: isActive ? "#3b82f6" : "transparent"
+              })}
+            >
+              Login
+            </NavLink>
+
+            <NavLink 
+              to="/register"
+              style={({ isActive }) => ({
+                ...styles.link,
+                backgroundColor: isActive ? "#3b82f6" : "transparent"
+              })}
+            >
+              Register
+            </NavLink>
+
+            <NavLink 
+              to="/history"
+              style={({ isActive }) => ({
+                ...styles.link,
+                backgroundColor: isActive ? "#3b82f6" : "transparent"
+              })}
+            >
+              History
+            </NavLink>
             </div>
           </div>
         </nav>
@@ -80,6 +112,9 @@ function App() {
                 )
               } 
             />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/history" element={<History />} />
 
           </Routes>
         </div>

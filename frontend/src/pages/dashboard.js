@@ -180,11 +180,11 @@ function Dashboard({ data }) {
               {interview_insights.length > 0 ? (
                 interview_insights.map((insight, idx) => (
                   <div key={idx} style={styles.interviewCard}>
-                    <div style={styles.interviewHeader}>
-                      <h3>{insight.job_title}</h3>
-                      <span style={styles.matchBadge} style={{background: "#1976d2"}}>
-                        {insight.match_score}%
-                      </span>
+                  <div style={styles.interviewHeader}>
+                    <h3>{insight.job_title}</h3>
+                    <span style={{...styles.matchBadge, background: "#1976d2"}}>
+                      {insight.match_score}%
+                    </span>
                     </div>
                     <ul style={styles.tipsList}>
                       {insight.tips.map((tip, tipIdx) => (

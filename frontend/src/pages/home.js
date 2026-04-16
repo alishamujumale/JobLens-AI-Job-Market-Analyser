@@ -69,7 +69,8 @@ function Home() {
           </section>
 
           <section style={styles.quickMatchSection}>
-            <h2 style={styles.sectionTitle}>Quick Match</h2>
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+            <h2 style={styles.sectionTitle}>Quick Match</h2> </div>
 
             <input
               placeholder="Skills (python, react, sql)"

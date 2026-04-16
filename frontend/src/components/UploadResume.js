@@ -31,9 +31,16 @@ function UploadResume({ setResumeData }) {
       const formData = new FormData();
       formData.append("file", file);
 
+      const token = localStorage.getItem("token");
+
       const res = await axios.post(
         "http://localhost:5000/upload",
-        formData
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
 
       console.log("Backend Response:", res.data);
