@@ -1,28 +1,46 @@
-import pdfminer.high_level
+# resume_parser.py
+
+import PyPDF2
 import docx
 
+# ----------------------------
+# Extract text from PDF
+# ----------------------------
+def extract_text_from_pdf(file_path):
+    text = ""
+    try:
+        with open(file_path, "rb") as file:
+            reader = PyPDF2.PdfReader(file)
+            for page in reader.pages:
+                text += page.extract_text() or ""
+    except Exception as e:
+        print("PDF Error:", e)
+    return text
+
+
+# ----------------------------
+# Extract text from DOCX
+# ----------------------------
+def extract_text_from_docx(file_path):
+    text = ""
+    try:
+        doc = docx.Document(file_path)
+        for para in doc.paragraphs:
+            text += para.text + " "
+    except Exception as e:
+        print("DOCX Error:", e)
+    return text
+
+
+# ----------------------------
+# MAIN FUNCTION (IMPORTANT)
+# ----------------------------
 def extract_text(file_path):
     if file_path.endswith(".pdf"):
-        return pdfminer.high_level.extract_text(file_path)
-    
+        return extract_text_from_pdf(file_path)
+
     elif file_path.endswith(".docx"):
-        doc = docx.Document(file_path)
-        return "\n".join([p.text for p in doc.paragraphs])
+        return extract_text_from_docx(file_path)
 
-    return ""
-
-def extract_skills(text):
-    skills_db = [
-        "python","java","c++","sql","flask","django",
-        "html","css","javascript","react","node",
-        "power bi","excel","machine learning"
-    ]
-
-    text = text.lower()
-    found = []
-
-    for skill in skills_db:
-        if skill in text:
-            found.append(skill)
-
-    return list(set(found))
+    else:
+        return ""

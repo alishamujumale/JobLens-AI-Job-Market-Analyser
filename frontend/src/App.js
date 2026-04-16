@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
 import { useState } from "react";
 
 import Home from "./pages/home";
@@ -7,49 +7,48 @@ import Upload from "./pages/upload";
 
 function App() {
   const [resumeData, setResumeData] = useState(null);
-  const [hoveredLink, setHoveredLink] = useState(null);
 
   return (
     <Router>
       <div style={styles.app}>
+
         {/* NAVBAR */}
         <nav style={styles.navbar}>
           <div style={styles.navContainer}>
             <h1 style={styles.logo}>JobLens 🔍</h1>
+
             <div style={styles.navLinks}>
-              <Link 
+              
+              <NavLink 
                 to="/" 
-                style={{
+                style={({ isActive }) => ({
                   ...styles.link,
-                  backgroundColor: hoveredLink === "home" ? "rgba(255,255,255,0.2)" : "transparent"
-                }}
-                onMouseEnter={() => setHoveredLink("home")}
-                onMouseLeave={() => setHoveredLink(null)}
+                  backgroundColor: isActive ? "#3b82f6" : "transparent"
+                })}
               >
                 Home
-              </Link>
-              <Link 
+              </NavLink>
+
+              <NavLink 
                 to="/upload" 
-                style={{
+                style={({ isActive }) => ({
                   ...styles.link,
-                  backgroundColor: hoveredLink === "upload" ? "rgba(255,255,255,0.2)" : "transparent"
-                }}
-                onMouseEnter={() => setHoveredLink("upload")}
-                onMouseLeave={() => setHoveredLink(null)}
+                  backgroundColor: isActive ? "#3b82f6" : "transparent"
+                })}
               >
                 Upload
-              </Link>
-              <Link 
+              </NavLink>
+
+              <NavLink 
                 to="/dashboard" 
-                style={{
+                style={({ isActive }) => ({
                   ...styles.link,
-                  backgroundColor: hoveredLink === "dashboard" ? "rgba(255,255,255,0.2)" : "transparent"
-                }}
-                onMouseEnter={() => setHoveredLink("dashboard")}
-                onMouseLeave={() => setHoveredLink(null)}
+                  backgroundColor: isActive ? "#3b82f6" : "transparent"
+                })}
               >
                 Dashboard
-              </Link>
+              </NavLink>
+
             </div>
           </div>
         </nav>
@@ -57,9 +56,31 @@ function App() {
         {/* MAIN CONTENT */}
         <div style={styles.content}>
           <Routes>
+            
+            {/* HOME */}
             <Route path="/" element={<Home />} />
-            <Route path="/upload" element={<Upload setResumeData={setResumeData} />} />
-            <Route path="/dashboard" element={<Dashboard data={resumeData} />} />
+
+            {/* UPLOAD */}
+            <Route 
+              path="/upload" 
+              element={<Upload setResumeData={setResumeData} />} 
+            />
+
+            {/* DASHBOARD (PROTECTED) */}
+            <Route 
+              path="/dashboard" 
+              element={
+                resumeData ? (
+                  <Dashboard resumeData={resumeData} />
+                ) : (
+                  <div style={styles.noData}>
+                    <h2>No Resume Uploaded</h2>
+                    <p>Please upload your resume first.</p>
+                  </div>
+                )
+              } 
+            />
+
           </Routes>
         </div>
       </div>
@@ -67,14 +88,18 @@ function App() {
   );
 }
 
+// ----------------------------
+// STYLES
+// ----------------------------
 const styles = {
   app: {
     minHeight: "100vh",
     backgroundColor: "#0f172a",
+    color: "white",
   },
+
   navbar: {
     background: "#1e293b",
-    color: "white",
     padding: "0",
     boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
     position: "sticky",
@@ -82,6 +107,7 @@ const styles = {
     zIndex: 100,
     borderBottom: "2px solid #3b82f6",
   },
+
   navContainer: {
     maxWidth: "1200px",
     margin: "0 auto",
@@ -90,30 +116,39 @@ const styles = {
     alignItems: "center",
     padding: "15px 20px",
   },
+
   logo: {
     margin: 0,
     fontSize: "24px",
     fontWeight: "bold",
     color: "#60a5fa",
   },
+
   navLinks: {
     display: "flex",
-    gap: "25px",
+    gap: "20px",
   },
+
   link: {
     color: "white",
     textDecoration: "none",
     fontSize: "16px",
     fontWeight: "500",
-    padding: "8px 12px",
+    padding: "8px 14px",
     borderRadius: "6px",
     transition: "all 0.3s ease",
-    cursor: "pointer",
   },
+
   content: {
     maxWidth: "1200px",
     margin: "0 auto",
     padding: "20px",
+  },
+
+  noData: {
+    textAlign: "center",
+    marginTop: "100px",
+    color: "#94a3b8",
   },
 };
 

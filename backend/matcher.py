@@ -1,5 +1,41 @@
-def match_jobs(user_skills, jobs):
+# ==============================
+# JobLens AI - SMART MATCHER v2
+# ==============================
+
+# ---------- PROJECT SCORE ----------
+def calculate_project_score(resume_text):
+    text = " ".join(resume_text).lower()
+
+    score = 0
+
+    # Deployment signals (VERY IMPORTANT)
+    if any(x in text for x in ["vercel", "netlify", "aws", "render", "live", "github pages"]):
+        score += 30
+
+    # Backend / API experience
+    if any(x in text for x in ["flask", "django", "node", "express", "api"]):
+        score += 20
+
+    # Advanced AI / ML projects
+    if any(x in text for x in ["ml", "ai", "cnn", "nlp", "recommendation", "deep learning"]):
+        score += 25
+
+    # Database experience
+    if any(x in text for x in ["mysql", "mongodb", "postgres", "sqlite"]):
+        score += 15
+
+    # GitHub presence
+    if "github" in text:
+        score += 10
+
+    return min(score, 100)
+
+
+# ---------- JOB MATCHING ----------
+def match_jobs(user_skills, jobs, resume_text=[]):
     results = []
+
+    project_score = calculate_project_score(resume_text)
 
     for job in jobs:
         required = job["skills"]
@@ -7,19 +43,33 @@ def match_jobs(user_skills, jobs):
         matched = list(set(user_skills) & set(required))
         missing = list(set(required) - set(user_skills))
 
-        score = int((len(matched) / len(required)) * 100)
+        # Skill match %
+        skill_score = (len(matched) / len(required)) * 100 if required else 0
+
+        # FINAL AI SCORE (weighted system)
+        final_score = (
+            0.6 * skill_score +
+            0.3 * project_score +
+            0.1 * min(len(user_skills) * 5, 100)
+        )
 
         results.append({
             "title": job["title"],
-            "match_score": score,
+            "match_score": round(final_score, 2),
             "matched_skills": matched,
-            "missing_skills": missing
+            "missing_skills": missing,
+            "skill_score": round(skill_score, 2),
+            "project_score": project_score
         })
 
-    results.sort(key=lambda x: x["match_score"], reverse=True)
-    return results
+    return sorted(results, key=lambda x: x["match_score"], reverse=True)
 
-def calculate_job_readiness(skills, jobs):
+
+# ---------- JOB READINESS ----------
+def calculate_job_readiness(skills, jobs, resume_text=[]):
+
+    project_score = calculate_project_score(resume_text)
+
     total_required = 0
     total_matched = 0
 
@@ -30,131 +80,151 @@ def calculate_job_readiness(skills, jobs):
         total_required += len(required)
         total_matched += matched
 
-    if total_required == 0:
-        return 0
+    skill_score = (total_matched / total_required) * 100 if total_required else 0
 
-    return int((total_matched / total_required) * 100)
+    readiness = (
+        0.5 * skill_score +
+        0.3 * project_score +
+        0.2 * min(len(skills) * 5, 100)
+    )
 
+    return round(readiness, 2)
+
+
+# ---------- OVERALL STATUS ----------
+def calculate_overall_status(skills, jobs, resume_text=[]):
+
+    readiness = calculate_job_readiness(skills, jobs, resume_text)
+
+    if readiness >= 85:
+        return {
+            "status": "JOB READY 🚀",
+            "readiness_score": readiness,
+            "message": "Strong profile with real-world project experience!"
+        }
+
+    elif readiness >= 65:
+        return {
+            "status": "COMPETITIVE 🟡",
+            "readiness_score": readiness,
+            "message": "Good profile. Improve deployment & advanced projects."
+        }
+
+    elif readiness >= 45:
+        return {
+            "status": "DEVELOPING 🟠",
+            "readiness_score": readiness,
+            "message": "Build more real-world deployed projects."
+        }
+
+    else:
+        return {
+            "status": "BEGINNER 🔴",
+            "readiness_score": readiness,
+            "message": "Focus on core skills + 2–3 strong projects."
+        }
+
+
+# ---------- SKILL GAP ANALYSIS ----------
 def calculate_skills_gap(user_skills, jobs):
-    """Identifies most important missing skills across all job opportunities"""
+
     skill_gap = {}
     skill_importance = {}
-    
+
     for job in jobs:
         required = job["skills"]
         missing = list(set(required) - set(user_skills))
-        
+
         for skill in missing:
             skill_gap[skill] = skill_gap.get(skill, 0) + 1
             skill_importance[skill] = skill_importance.get(skill, [])
             skill_importance[skill].append(job["title"])
-    
-    # Sort by frequency (how many jobs need this skill)
+
     sorted_gaps = sorted(skill_gap.items(), key=lambda x: x[1], reverse=True)
-    
+
     return [
         {
             "skill": skill,
             "frequency": count,
-            "required_for": skill_importance.get(skill, [])[:3]  # Top 3 jobs
+            "required_for": skill_importance.get(skill, [])[:3]
         }
-        for skill, count in sorted_gaps[:10]  # Top 10 gaps
+        for skill, count in sorted_gaps[:10]
     ]
 
+
+# ---------- INTERVIEW INSIGHTS ----------
 def generate_interview_insights(top_jobs):
-    """Generate interview tips for top matched roles"""
-    insights = []
-    
+
     interview_tips = {
-        "frontend developer": [
-            "Be ready to discuss React hooks and component lifecycle",
-            "Prepare for CSS layout challenges (Flexbox, Grid)",
-            "Know your JavaScript closures and async/await patterns",
-            "Have portfolio projects ready to demonstrate",
-            "Practice live coding on UI problems"
+        "frontend": [
+            "React hooks, lifecycle methods",
+            "CSS Flexbox & Grid",
+            "JavaScript async/await & closures",
+            "Build portfolio projects",
+            "UI optimization questions"
         ],
-        "backend developer": [
-            "Prepare SQL optimization and database design questions",
-            "Know about API design principles and REST vs GraphQL",
-            "Be ready to discuss authentication and security",
-            "Understand caching strategies and scalability patterns",
-            "Practice system design interviews"
+        "backend": [
+            "REST API design",
+            "Database optimization (SQL)",
+            "Authentication & security",
+            "System design basics",
+            "Scalability concepts"
         ],
-        "data analyst": [
-            "Know SQL queries and window functions",
-            "Prepare for Excel/Power BI demonstrations",
-            "Understand statistical concepts (A/B testing, regression)",
-            "Be ready to explain data insights and storytelling",
-            "Know how to handle missing data"
+        "data": [
+            "SQL queries & joins",
+            "Statistics basics",
+            "Data visualization tools",
+            "Python data libraries",
+            "Business insights storytelling"
         ],
-        "ai engineer": [
-            "Deep dive into ML algorithms and neural networks",
-            "Be ready to discuss model evaluation metrics",
-            "Know about overfitting and regularization",
-            "Prepare to code ML solutions (scikit-learn, TensorFlow)",
-            "Understand feature engineering"
+        "ai": [
+            "ML algorithms basics",
+            "Model evaluation metrics",
+            "Overfitting & tuning",
+            "Feature engineering",
+            "Deep learning basics"
         ],
-        "devops engineer": [
-            "Know Docker, Kubernetes, CI/CD pipelines",
-            "Understand cloud platforms (AWS, Azure, GCP)",
-            "Be ready to design scalable infrastructure",
-            "Know about monitoring and logging",
-            "Understand infrastructure as code (Terraform, Ansible)"
+        "devops": [
+            "Docker & Kubernetes",
+            "CI/CD pipelines",
+            "Cloud (AWS/Azure)",
+            "Infrastructure as code",
+            "Monitoring tools"
         ],
-        "product manager": [
-            "Prepare case studies and product strategy questions",
-            "Know metrics for product success (OKRs, KPIs)",
-            "Be ready to discuss user research and validation",
-            "Understand roadmap prioritization",
-            "Prepare cross-functional collaboration examples"
+        "product": [
+            "Product case studies",
+            "User research",
+            "Metrics (KPIs, OKRs)",
+            "Roadmap planning",
+            "Stakeholder communication"
         ]
     }
-    
-    for job in top_jobs[:3]:  # Top 3 jobs
-        job_title = job["title"].lower()
+
+    insights = []
+
+    for job in top_jobs[:3]:
+
+        title = job["title"].lower()
         tips = []
-        
-        for key, values in interview_tips.items():
-            if key in job_title:
-                tips = values
+
+        for key in interview_tips:
+            if key in title:
+                tips = interview_tips[key]
                 break
-        
+
         if not tips:
             tips = [
-                f"Research the {job['title']} role thoroughly",
-                "Prepare a clear explanation of your background",
-                "Ask thoughtful questions about the role and team",
-                "Research the company's tech stack and challenges",
-                "Share relevant projects and experiences"
+                "Understand role deeply",
+                "Prepare project explanation",
+                "Be ready for HR + technical questions",
+                "Research company tech stack",
+                "Showcase real projects"
             ]
-        
+
         insights.append({
             "job_title": job["title"],
             "match_score": job["match_score"],
             "tips": tips
         })
-    
-    return insights
 
-def calculate_overall_status(skills, jobs):
-    """Calculate overall job market readiness status"""
-    readiness = calculate_job_readiness(skills, jobs)
-    
-    if readiness >= 80:
-        status = "READY"
-        message = "You're well-prepared for many opportunities! 🚀"
-    elif readiness >= 60:
-        status = "GOOD"
-        message = "You're competitive. Focus on top gap skills!"
-    elif readiness >= 40:
-        status = "DEVELOPING"
-        message = "You have a solid foundation. Keep learning!"
-    else:
-        status = "STARTING"
-        message = "Great time to build key skills for your target roles!"
-    
-    return {
-        "status": status,
-        "readiness_score": readiness,
-        "message": message
-    }
+    return insights

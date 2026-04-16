@@ -10,9 +10,18 @@ function UploadResume({ setResumeData }) {
 
   const navigate = useNavigate();
 
+  // ----------------------------
+  // HANDLE UPLOAD
+  // ----------------------------
   const handleUpload = async () => {
     if (!file) {
       alert("Please upload a resume first!");
+      return;
+    }
+
+    // File type validation
+    if (!file.name.endsWith(".pdf") && !file.name.endsWith(".docx")) {
+      alert("Only PDF or DOCX files are allowed!");
       return;
     }
 
@@ -24,24 +33,33 @@ function UploadResume({ setResumeData }) {
 
       const res = await axios.post(
         "http://localhost:5000/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
 
+      console.log("Backend Response:", res.data);
+
+      // Store response globally
       setResumeData(res.data);
+
+      // Navigate to dashboard
       navigate("/dashboard");
 
     } catch (error) {
       console.log("Upload error:", error);
-      alert("Resume upload failed. Check backend server.");
+
+      if (error.response) {
+        alert(error.response.data.error || "Upload failed");
+      } else {
+        alert("Server not running or network issue");
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  // ----------------------------
+  // DRAG & DROP HANDLERS
+  // ----------------------------
   const handleDrop = (e) => {
     e.preventDefault();
     setDragActive(false);
@@ -59,20 +77,25 @@ function UploadResume({ setResumeData }) {
     setDragActive(false);
   };
 
-  // Handle dropzone click to open file picker
+  // Open file picker
   const handleDropzoneClick = () => {
     fileInputRef.current?.click();
   };
 
+  // ----------------------------
+  // UI
+  // ----------------------------
   return (
     <div style={styles.container}>
-      <h3 style={{ marginBottom: "20px", color: "#60a5fa" }}>Upload Your Resume</h3>
+      <h1 style={styles.title}>🔍 JobLens</h1>
+      <h3 style={styles.subtitle}>Upload Your Resume for AI Analysis</h3>
 
+      {/* DROP ZONE */}
       <div
         style={{
           ...styles.dropzone,
           borderColor: dragActive ? "#10b981" : "#3b82f6",
-          background: dragActive ? "rgba(59, 130, 246, 0.1)" : "#0f172a",
+          background: dragActive ? "rgba(59,130,246,0.1)" : "#0f172a",
         }}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -92,34 +115,58 @@ function UploadResume({ setResumeData }) {
         />
       </div>
 
+      {/* FILE PREVIEW */}
       {file && (
         <div style={styles.filePreview}>
-          <p>Selected File: <b>{file.name}</b></p>
-          <p style={styles.fileSize}>({(file.size / 1024 / 1024).toFixed(2)} MB)</p>
+          <p>
+            Selected File: <b>{file.name}</b>
+          </p>
+          <p style={styles.fileSize}>
+            ({(file.size / 1024 / 1024).toFixed(2)} MB)
+          </p>
         </div>
       )}
 
-      <button
-        onClick={handleUpload}
-        disabled={loading || !file}
-        style={{
-          ...styles.button,
-          background: loading ? "#888" : !file ? "#ccc" : "#1976d2",
-          cursor: loading || !file ? "not-allowed" : "pointer",
-        }}
-      >
-        {loading ? "Analyzing Resume..." : "Analyze Resume"}
-      </button>
+      {/* BUTTON */}
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "30px" }}>
+  <button
+    onClick={handleUpload}
+    disabled={loading || !file}
+    style={{
+      ...styles.button,
+      background: loading ? "#888" : !file ? "#475569" : "#3b82f6",
+      cursor: loading || !file ? "not-allowed" : "pointer",
+    }}
+  >
+    {loading ? "Analyzing Resume..." : "Analyze Resume"}
+  </button>
+</div>
     </div>
   );
-}
+} 
 
+
+// ----------------------------
+// STYLES
+// ----------------------------
 const styles = {
   container: {
     textAlign: "center",
-    padding: "40px 20px",
-    maxWidth: "600px",
-    margin: "0 auto",
+    padding: "60px 20px",
+    background: "#020617",
+    minHeight: "100vh",
+    color: "white",
+  },
+
+  title: {
+    fontSize: "36px",
+    color: "#38bdf8",
+    marginBottom: "10px",
+  },
+
+  subtitle: {
+    color: "#94a3b8",
+    marginBottom: "30px",
   },
 
   dropzone: {
@@ -128,58 +175,54 @@ const styles = {
     padding: "60px 30px",
     margin: "30px auto",
     width: "100%",
+    maxWidth: "500px",
     cursor: "pointer",
     transition: "all 0.3s ease",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
   },
 
   dragText: {
     fontSize: "18px",
     fontWeight: "bold",
     color: "#60a5fa",
-    margin: "10px 0",
   },
 
   orText: {
     fontSize: "14px",
     color: "#64748b",
-    margin: "15px 0",
+    margin: "10px 0",
   },
 
   clickText: {
     fontSize: "14px",
     color: "#94a3b8",
-    margin: "10px 0",
     textDecoration: "underline",
   },
 
   filePreview: {
-    background: "rgba(16, 185, 129, 0.1)",
+    background: "rgba(16,185,129,0.1)",
     border: "1px solid #10b981",
     borderRadius: "8px",
     padding: "15px",
     marginTop: "20px",
+    display: "inline-block",
     color: "#10b981",
   },
 
   fileSize: {
     fontSize: "12px",
-    margin: "5px 0 0 0",
     color: "#6ee7b7",
   },
 
   button: {
-    marginTop: "25px",
-    padding: "14px 35px",
+    marginTop: "30px",
+    padding: "14px 40px",
     fontSize: "16px",
     fontWeight: "bold",
     color: "white",
     border: "none",
     borderRadius: "8px",
-    transition: "all 0.3s ease",
-    boxShadow: "0 4px 6px rgba(59, 130, 246, 0.2)",
-    background: "#3b82f6",
-    cursor: "pointer",
+    transition: "0.3s",
+    textAlign: "center",
   },
 };
 
