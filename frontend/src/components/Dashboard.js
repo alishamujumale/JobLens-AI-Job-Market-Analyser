@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard({ resumeData }) {
+  const navigate = useNavigate();
+
+  // ✅ ALWAYS at top (not conditional)
+  useEffect(() => {
+    if (!resumeData) {
+      navigate("/upload");
+    }
+  }, [resumeData, navigate]);
+
+  // AFTER hooks
   if (!resumeData) {
-    return <h2 style={{ textAlign: "center" }}>No Data Found</h2>;
+    return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
   }
 
   const {
@@ -37,7 +48,7 @@ function Dashboard({ resumeData }) {
 
       {/* SKILLS FOUND */}
       <div style={styles.card}>
-        <h2>Skills Found</h2>
+        <h2>Your Skills</h2>
         <div style={styles.tagContainer}>
           {skills_found?.map((skill, i) => (
             <span key={i} style={styles.skillTag}>{skill}</span>
@@ -84,82 +95,3 @@ function Dashboard({ resumeData }) {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    padding: "40px",
-    background: "#0f172a",
-    minHeight: "100vh",
-    color: "white",
-  },
-
-  title: {
-    textAlign: "center",
-    marginBottom: "30px",
-    color: "#38bdf8",
-  },
-
-  card: {
-    background: "#1e293b",
-    padding: "20px",
-    marginBottom: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.4)",
-  },
-
-  progressBar: {
-    width: "100%",
-    height: "20px",
-    background: "#334155",
-    borderRadius: "10px",
-    overflow: "hidden",
-    marginTop: "10px",
-  },
-
-  progressFill: {
-    height: "100%",
-    transition: "width 0.5s ease",
-  },
-
-  scoreText: {
-    marginTop: "10px",
-    fontSize: "18px",
-    fontWeight: "bold",
-  },
-
-  tagContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "10px",
-    marginTop: "10px",
-  },
-
-  skillTag: {
-    background: "#22c55e",
-    padding: "6px 12px",
-    borderRadius: "20px",
-    fontSize: "14px",
-  },
-
-  missingTag: {
-    background: "#ef4444",
-    padding: "6px 12px",
-    borderRadius: "20px",
-    fontSize: "14px",
-  },
-
-  jobCard: {
-    background: "#334155",
-    padding: "10px",
-    marginTop: "10px",
-    borderRadius: "8px",
-  },
-
-  status: {
-    fontSize: "18px",
-    fontWeight: "bold",
-    color: "#facc15",
-  },
-};
-
-export default Dashboard;

@@ -1,22 +1,17 @@
 # resume_parser.py
 
-import PyPDF2
+from pdfminer.high_level import extract_text as pdf_extract_text
 import docx
 
 # ----------------------------
 # Extract text from PDF
 # ----------------------------
 def extract_text_from_pdf(file_path):
-    text = ""
     try:
-        with open(file_path, "rb") as file:
-            reader = PyPDF2.PdfReader(file)
-            for page in reader.pages:
-                text += page.extract_text() or ""
+        return pdf_extract_text(file_path)
     except Exception as e:
         print("PDF Error:", e)
-    return text
-
+        return ""
 
 # ----------------------------
 # Extract text from DOCX

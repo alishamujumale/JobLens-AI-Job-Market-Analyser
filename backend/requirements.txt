@@ -2,3 +2,5 @@ flask
 flask-cors
 pdfminer.six
 python-docx
+flask-jwt-extended
+flask-sqlalchemy

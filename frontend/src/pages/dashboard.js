@@ -2,29 +2,32 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 
-function Dashboard({ data }) {
+function Dashboard({ resumeData }) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Redirect if no data
   useEffect(() => {
-    if (!data) {
+    if (!resumeData) {
       navigate("/upload");
     }
-  }, [data, navigate]);
+  }, [resumeData, navigate]);
 
-  if (!data) {
+  // Redirect if no data
+  if (!resumeData) {
     return <div>Loading...</div>;
   }
 
   const { 
     skills_found, 
+    missing_skills,
+    suggestions,
     recommendations, 
     skills_gap, 
     interview_insights, 
     overall_status 
-  } = data;
-  const top5Jobs = recommendations.slice(0, 5);
+  } = resumeData;
+
+const top5Jobs = recommendations.slice(0, 5);
 
   return (
     <div style={styles.dashboard}>
@@ -83,7 +86,7 @@ function Dashboard({ data }) {
                 <div style={styles.statusValue}>{overall_status.readiness_score}%</div>
                 <div style={styles.statusText}>{overall_status.status}</div>
               </div>
-              <p style={styles.statusMessage}>{overall_status.message}</p>
+              <p style={styles.statusMessage}>{overall_status?.message || overall_status?.status}</p>
             </div>
 
             {/* SKILLS FOUND */}
@@ -101,6 +104,36 @@ function Dashboard({ data }) {
                 )}
               </div>
             </div>
+
+            {/* SUGGESTIONS */}
+            <div style={styles.card}>
+              <h3>Resume Suggestions</h3>
+              {suggestions && suggestions.length > 0 ? (
+                <ul style={styles.suggestionsList}>
+                  {suggestions.map((suggestion, idx) => (
+                    <li key={idx} style={styles.suggestionItem}>
+                      {suggestion}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No suggestions available yet.</p>
+              )}
+            </div>
+
+            {/* MISSING SKILLS */}
+            {missing_skills && missing_skills.length > 0 && (
+              <div style={styles.card}>
+                <h3>Missing High-Value Skills</h3>
+                <div style={styles.skillsList}>
+                  {missing_skills.slice(0, 10).map((skill, idx) => (
+                    <span key={idx} style={styles.missingBadge}>
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* TOP JOB MATCH */}
             {recommendations.length > 0 && (
@@ -422,6 +455,25 @@ const styles = {
     cursor: "pointer",
     fontWeight: "bold",
     transition: "0.3s",
+  },
+  suggestionsList: {
+    listStyle: "disc inside",
+    textAlign: "left",
+    marginTop: "10px",
+    color: "#cbd5e1",
+  },
+  suggestionItem: {
+    marginBottom: "8px",
+    lineHeight: 1.6,
+  },
+  missingBadge: {
+    display: "inline-block",
+    background: "#ef4444",
+    color: "white",
+    padding: "6px 10px",
+    borderRadius: "999px",
+    margin: "4px 6px 4px 0",
+    fontSize: "12px",
   },
 };
 

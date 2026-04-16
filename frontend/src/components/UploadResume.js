@@ -33,6 +33,14 @@ function UploadResume({ setResumeData }) {
 
       const token = localStorage.getItem("token");
 
+      if (!token || token === "undefined") {
+        setLoading(false);
+        localStorage.removeItem("token");
+        alert("Please login before uploading a resume.");
+        navigate("/login");
+        return;
+      }
+
       const res = await axios.post(
         "http://localhost:5000/upload",
         formData,
@@ -46,7 +54,8 @@ function UploadResume({ setResumeData }) {
       console.log("Backend Response:", res.data);
 
       // Store response globally
-      setResumeData(res.data);
+      localStorage.setItem("resumeData", JSON.stringify(res.data));
+setResumeData(res.data);;
 
       // Navigate to dashboard
       navigate("/dashboard");
@@ -55,6 +64,12 @@ function UploadResume({ setResumeData }) {
       console.log("Upload error:", error);
 
       if (error.response) {
+        if (error.response.status === 401) {
+          localStorage.removeItem("token");
+          alert("Session invalid. Please log in again.");
+          navigate("/login");
+          return;
+        }
         alert(error.response.data.error || "Upload failed");
       } else {
         alert("Server not running or network issue");
@@ -149,6 +164,8 @@ function UploadResume({ setResumeData }) {
   </button>
 </div>
     </div>
+
+    
   );
 } 
 
